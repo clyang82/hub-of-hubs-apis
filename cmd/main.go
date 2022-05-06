@@ -1,6 +1,6 @@
 // Copyright (c) 2022 Red Hat, Inc.
 
-package cmd
+package main
 
 import (
 	"fmt"
@@ -14,6 +14,7 @@ import (
 	"k8s.io/component-base/logs"
 
 	"github.com/clyang82/hub-of-hubs-apis/pkg/server"
+	"github.com/spf13/pflag"
 )
 
 func main() {
@@ -21,6 +22,9 @@ func main() {
 
 	logs.InitLogs()
 	defer logs.FlushLogs()
+
+	opts := server.NewOptions()
+	opts.AddFlags(pflag.CommandLine)
 
 	clusterCfg, err := clientcmd.BuildConfigFromFlags("", "")
 	if err != nil {
@@ -36,7 +40,13 @@ func main() {
 
 	dynInformerFactory := dynamicinformer.NewDynamicSharedInformerFactory(dynamicClient, 0)
 
-	proxyServer, err := server.NewServer(dynamicClient, nil)
+	apiServerConfig, err := opts.APIServerConfig()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
+	}
+
+	proxyServer, err := server.NewServer(dynamicClient, nil, apiServerConfig)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
