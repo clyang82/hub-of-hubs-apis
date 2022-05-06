@@ -1,0 +1,9 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: open-cluster-management:hub-of-hubs-proxy-server
+rules:
+# Allow hub to manage managedclusters
+- apiGroups: ["policy.open-cluster-management.io"]
+  resources: ["policies"]
+  verbs: ["get", "list", "watch",]

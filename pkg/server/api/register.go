@@ -11,6 +11,7 @@ import (
 	"k8s.io/client-go/dynamic/dynamicinformer"
 	policyv1 "open-cluster-management.io/governance-policy-propagator/api/v1"
 
+	policyview "github.com/clyang82/hub-of-hubs-apis/pkg/server/apis/policyview"
 	policyviewv1 "github.com/clyang82/hub-of-hubs-apis/pkg/server/apis/policyview/v1"
 	"github.com/clyang82/hub-of-hubs-apis/pkg/server/rest/policy"
 )
@@ -28,6 +29,7 @@ func init() {
 	// we need to add the options to empty v1
 	metav1.AddToGroupVersion(Scheme, schema.GroupVersion{Version: "v1"})
 	policyv1.AddToScheme(Scheme)
+	policyview.Install(Scheme)
 }
 
 func Install(server *genericapiserver.GenericAPIServer,

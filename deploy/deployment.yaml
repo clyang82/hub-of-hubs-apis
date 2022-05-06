@@ -14,6 +14,7 @@ spec:
       labels:
         app: hub-of-hubs-apis
     spec:
+      serviceAccountName: hub-of-hubs-proxy-server-sa
       containers:
       - args:
           - "/hub-of-hubs-apis"

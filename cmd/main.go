@@ -48,7 +48,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	proxyServer, err := server.NewServer(dynamicClient, nil, apiServerConfig)
+	proxyServer, err := server.NewServer(dynamicClient, dynInformerFactory, apiServerConfig)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
