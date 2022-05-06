@@ -21,6 +21,19 @@ spec:
         name: hub-of-hubs-apis
         image: quay.io/clyang82/hub-of-hubs-apis:latest
         imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            scheme: HTTPS
+            port: 6443
+          initialDelaySeconds: 2
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            scheme: HTTPS
+            port: 6443
+          initialDelaySeconds: 2
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:

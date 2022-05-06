@@ -11,6 +11,7 @@ import (
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/dynamic/dynamicinformer"
 	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/component-base/cli/flag"
 	"k8s.io/component-base/logs"
 
 	"github.com/clyang82/hub-of-hubs-apis/pkg/server"
@@ -20,11 +21,12 @@ import (
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	logs.InitLogs()
-	defer logs.FlushLogs()
-
 	opts := server.NewOptions()
 	opts.AddFlags(pflag.CommandLine)
+
+	flag.InitFlags()
+	logs.InitLogs()
+	defer logs.FlushLogs()
 
 	clusterCfg, err := clientcmd.BuildConfigFromFlags("", "")
 	if err != nil {

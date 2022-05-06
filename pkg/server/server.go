@@ -15,7 +15,7 @@ type Server struct {
 
 func NewServer(
 	client dynamic.Interface,
-	informerFactory dynamicinformer.DynamicSharedInformerFactory
+	informerFactory dynamicinformer.DynamicSharedInformerFactory,
 	apiServerConfig *genericapiserver.Config) (*Server, error) {
 	apiServer, err := apiServerConfig.Complete(nil).New("server", genericapiserver.NewEmptyDelegate())
 	if err != nil {
