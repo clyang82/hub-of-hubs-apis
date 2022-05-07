@@ -46,6 +46,7 @@ func installPolicyViewGroup(server *genericapiserver.GenericAPIServer,
 	v1storage := map[string]rest.Storage{
 		"policies": policy.NewREST(
 			informerFactory.ForResource(policyviewv1.GroupVersionResource()).Lister(),
+			client.Resource(policyviewv1.GroupVersionResource()),
 		),
 	}
 
