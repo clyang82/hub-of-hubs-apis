@@ -8,11 +8,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hub-of-hubs-apis
+      app: hoh-proxyserver
   template:
     metadata:
       labels:
-        app: hub-of-hubs-apis
+        app: hoh-proxyserver
     spec:
       serviceAccountName: hub-of-hubs-proxy-server-sa
       containers:

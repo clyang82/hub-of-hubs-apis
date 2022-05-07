@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: hoh-proxyserver
+  namespace: open-cluster-management
+  annotations:
+    "service.beta.openshift.io/serving-cert-secret-name": hoh-proxyserver
+spec:
+  selector:
+    app: hoh-proxyserver
+  ports:
+    - name: secure
+      protocol: TCP
+      port: 443
+      targetPort: 6443
