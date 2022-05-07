@@ -3,3 +3,6 @@ resources:
 - ./clusterrole_binding.yaml
 - ./clusterrole.yaml
 - ./deployment.yaml
+- ./service.yaml
+- ./apiservice.yaml
+

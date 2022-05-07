@@ -57,15 +57,23 @@ func (s *REST) List(ctx context.Context, options *metainternalversion.ListOption
 		return nil, errors.NewForbidden(policyviewv1.Resource(), "", fmt.Errorf("unable to list policy without a user on the context"))
 	}
 
-	policyList, err := s.lister.List(labels.Everything())
+	runtimePolicyList, err := s.lister.List(labels.Everything())
 	if err != nil {
 		return nil, err
 	}
-	for _, policy := range policyList {
-		fmt.Printf("policy name is %v", policy.GetObjectKind())
+
+	policyList := &policyv1.PolicyList{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: policyv1.GroupVersion.String(),
+			Kind:       policyv1.Kind,
+		},
+		Items: []policyv1.Policy{},
+	}
+	for _, runtimePolicy := range runtimePolicyList {
+		policyList.Items = append(policyList.Items, *(runtimePolicy.(*policyv1.Policy)))
 	}
 
-	return &policyv1.PolicyList{}, nil
+	return policyList, nil
 }
 
 func (c *REST) ConvertToTable(ctx context.Context, object runtime.Object, tableOptions runtime.Object) (*metav1.Table, error) {

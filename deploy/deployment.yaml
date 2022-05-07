@@ -19,6 +19,8 @@ spec:
       - args:
           - "/hub-of-hubs-apis"
           - "--secure-port=6443"
+          - "--tls-cert-file=/var/run/apiservice/tls.crt"
+          - "--tls-private-key-file=/var/run/apiservice/tls.key"
         name: hub-of-hubs-apis
         image: quay.io/clyang82/hub-of-hubs-apis:latest
         imagePullPolicy: Always
@@ -42,3 +44,12 @@ spec:
               - ALL
           privileged: false
           runAsNonRoot: true
+        volumeMounts:
+        - mountPath: /var/run/apiservice
+          name: apiservice-certs
+      volumes:
+      - name: apiservice-certs
+        secret:
+          defaultMode: 420
+          secretName: hoh-proxyserver
+
