@@ -11,9 +11,8 @@ import (
 	"k8s.io/client-go/dynamic/dynamicinformer"
 	policyv1 "open-cluster-management.io/governance-policy-propagator/api/v1"
 
-	policyview "github.com/clyang82/hub-of-hubs-apis/pkg/server/apis/policyview"
-	policyviewv1 "github.com/clyang82/hub-of-hubs-apis/pkg/server/apis/policyview/v1"
-	"github.com/clyang82/hub-of-hubs-apis/pkg/server/rest/policy"
+	"github.com/clyang82/hub-of-hubs-apis/pkg/server/apis/policy"
+	restpolicy "github.com/clyang82/hub-of-hubs-apis/pkg/server/rest/policy"
 )
 
 var (
@@ -28,31 +27,30 @@ var (
 func init() {
 	// we need to add the options to empty v1
 	metav1.AddToGroupVersion(Scheme, schema.GroupVersion{Version: "v1"})
-	policyv1.AddToScheme(Scheme)
-	policyview.Install(Scheme)
+	policy.Install(Scheme)
 }
 
 func Install(server *genericapiserver.GenericAPIServer,
 	client dynamic.Interface, informerFactory dynamicinformer.DynamicSharedInformerFactory) error {
-	if err := installPolicyViewGroup(server, client, informerFactory); err != nil {
+	if err := installPolicyGroup(server, client, informerFactory); err != nil {
 		return err
 	}
 	return nil
 }
 
-func installPolicyViewGroup(server *genericapiserver.GenericAPIServer,
+func installPolicyGroup(server *genericapiserver.GenericAPIServer,
 	client dynamic.Interface, informerFactory dynamicinformer.DynamicSharedInformerFactory) error {
 
 	v1storage := map[string]rest.Storage{
-		"policies": policy.NewREST(
-			informerFactory.ForResource(policyviewv1.GroupVersionResource()).Lister(),
-			client.Resource(policyviewv1.GroupVersionResource()),
+		"policies": restpolicy.NewREST(
+			informerFactory.ForResource(policy.GroupVersionResource()).Lister(),
+			client.Resource(policy.GroupVersionResource()),
 		),
 	}
 
-	apiGroupInfo := genericapiserver.NewDefaultAPIGroupInfo(policyviewv1.GroupName, Scheme, ParameterCodec, Codecs)
+	apiGroupInfo := genericapiserver.NewDefaultAPIGroupInfo(policyv1.GroupVersion.Group, Scheme, ParameterCodec, Codecs)
 
-	apiGroupInfo.VersionedResourcesStorageMap[policyviewv1.SchemeGroupVersion.Version] = v1storage
+	apiGroupInfo.VersionedResourcesStorageMap[policyv1.SchemeGroupVersion.Version] = v1storage
 
 	return server.InstallAPIGroup(&apiGroupInfo)
 }

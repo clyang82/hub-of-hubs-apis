@@ -4,5 +4,5 @@ resources:
 - ./clusterrole.yaml
 - ./deployment.yaml
 - ./service.yaml
-- ./apiservice.yaml
+- ./route.yaml
 

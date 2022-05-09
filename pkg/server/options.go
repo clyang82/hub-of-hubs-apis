@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Red Hat, Inc.
+// Copyright (c) 2022 Red Hat, Inc.
 
 package server
 
@@ -6,10 +6,12 @@ import (
 	"fmt"
 
 	"github.com/spf13/pflag"
+	openapinamer "k8s.io/apiserver/pkg/endpoints/openapi"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	genericapiserveroptions "k8s.io/apiserver/pkg/server/options"
 
 	"github.com/clyang82/hub-of-hubs-apis/pkg/server/api"
+	"github.com/clyang82/hub-of-hubs-apis/pkg/server/apis/openapi"
 )
 
 type Options struct {
@@ -71,10 +73,10 @@ func (o *Options) APIServerConfig() (*genericapiserver.Config, error) {
 	}
 
 	// enable OpenAPI schemas
-	// serverConfig.OpenAPIConfig = genericapiserver.DefaultOpenAPIConfig(
-	// 	openapi.GetOpenAPIDefinitions, openapinamer.NewDefinitionNamer(api.Scheme))
-	// serverConfig.OpenAPIConfig.Info.Title = "hub-of-hubs-proxy-server"
-	// serverConfig.OpenAPIConfig.Info.Version = "0.0.1"
+	serverConfig.OpenAPIConfig = genericapiserver.DefaultOpenAPIConfig(
+		openapi.GetOpenAPIDefinitions, openapinamer.NewDefinitionNamer(api.Scheme))
+	serverConfig.OpenAPIConfig.Info.Title = "hub-of-hubs-api-server"
+	serverConfig.OpenAPIConfig.Info.Version = "0.0.1"
 
 	return serverConfig, nil
 }

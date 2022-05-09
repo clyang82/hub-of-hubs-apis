@@ -1,4 +1,4 @@
-package policyview
+package policy
 
 import (
 	metainternalversion "k8s.io/apimachinery/pkg/apis/meta/internalversion"
@@ -8,7 +8,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 
-	policyviewv1 "github.com/clyang82/hub-of-hubs-apis/pkg/server/apis/policyview/v1"
+	policyv1 "open-cluster-management.io/governance-policy-propagator/api/v1"
 )
 
 var Scheme = runtime.NewScheme()
@@ -27,6 +27,11 @@ var (
 		&metav1.APIResourceList{},
 		&metav1.Table{},
 	}
+	schemeBuilder = runtime.NewSchemeBuilder(addKnownTypes)
+
+	// AddToScheme exists solely to keep the old generators creating valid code
+	// DEPRECATED
+	AddToScheme = schemeBuilder.AddToScheme
 )
 
 func init() {
@@ -39,7 +44,7 @@ func init() {
 }
 
 // SchemeGroupVersion is group version used to register these objects
-var SchemeGroupVersion = schema.GroupVersion{Group: policyviewv1.GroupName, Version: runtime.APIVersionInternal}
+var SchemeGroupVersion = policyv1.GroupVersion
 
 // Kind takes an unqualified kind and returns back a Group qualified GroupKind
 func Kind(kind string) schema.GroupKind {
@@ -51,7 +56,25 @@ func Resource(resource string) schema.GroupResource {
 	return SchemeGroupVersion.WithResource(resource).GroupResource()
 }
 
+func GroupVersionResource() schema.GroupVersionResource {
+	return schema.GroupVersionResource{
+		Group:    policyv1.GroupVersion.Group,
+		Version:  policyv1.GroupVersion.Version,
+		Resource: "policies",
+	}
+}
+
+// Adds the list of known types to api.Scheme.
+func addKnownTypes(scheme *runtime.Scheme) error {
+	scheme.AddKnownTypes(policyv1.GroupVersion,
+		&policyv1.Policy{},
+		&policyv1.PolicyList{},
+	)
+	metav1.AddToGroupVersion(scheme, policyv1.GroupVersion)
+	return nil
+}
+
 func Install(scheme *runtime.Scheme) {
-	utilruntime.Must(policyviewv1.AddToScheme(scheme))
-	utilruntime.Must(scheme.SetVersionPriority(policyviewv1.SchemeGroupVersion))
+	utilruntime.Must(AddToScheme(scheme))
+	utilruntime.Must(scheme.SetVersionPriority(policyv1.SchemeGroupVersion))
 }

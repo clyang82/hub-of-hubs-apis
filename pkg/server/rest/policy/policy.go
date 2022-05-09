@@ -16,7 +16,7 @@ import (
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/tools/cache"
 
-	policyviewv1 "github.com/clyang82/hub-of-hubs-apis/pkg/server/apis/policyview/v1"
+	policyviewv1 "github.com/clyang82/hub-of-hubs-apis/pkg/server/apis/policy/v1"
 	policyv1 "open-cluster-management.io/governance-policy-propagator/api/v1"
 )
 
@@ -110,7 +110,12 @@ func (s *REST) Watch(ctx context.Context, options *metainternalversion.ListOptio
 		return nil, errors.NewForbidden(policyviewv1.Resource(), "", fmt.Errorf("unable to list policy without a user on the context"))
 	}
 
-	return s.resourceInterface.Watch(ctx, metav1.ListOptions{})
+	watch, err := s.resourceInterface.Watch(ctx, metav1.ListOptions{})
+
+	if err != nil {
+		return nil, err
+	}
+	return watch, err
 }
 
 var _ = rest.Getter(&REST{})

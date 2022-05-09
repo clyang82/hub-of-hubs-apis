@@ -9,6 +9,7 @@ require (
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/component-base v0.23.3
 	open-cluster-management.io/governance-policy-propagator v0.6.1-0.20220329192459-17e81c48ea1d
+    k8s.io/code-generator v0.24.0-alpha.2
 )
 
 require (
@@ -104,4 +105,5 @@ replace (
 	k8s.io/apiserver => k8s.io/apiserver v0.23.3
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.23.3
 	k8s.io/client-go => k8s.io/client-go v0.23.3
+    k8s.io/code-generator => k8s.io/code-generator v0.23.3
 )
